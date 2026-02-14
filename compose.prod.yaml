@@ -1,0 +1,53 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: conjuntos-postgres-prod
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ${DB_NAME}
+    volumes:
+      - postgres_prod_data:/var/lib/postgresql/data
+      - ./init-db:/docker-entrypoint-initdb.d
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - conjuntos-network
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: conjuntos-app-prod
+    restart: unless-stopped
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_PROFILES_ACTIVE: prod
+      SPRING_R2DBC_URL: r2dbc:postgresql://db:5432/${DB_NAME:-conjuntos}
+      SPRING_R2DBC_USERNAME: ${DB_USER:-postgres}
+      SPRING_R2DBC_PASSWORD: ${DB_PASSWORD:-postgres}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - conjuntos-network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:8080/actuator/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+networks:
+  conjuntos-network:
+    driver: bridge
+
+volumes:
+  postgres_prod_data:
+    driver: local
+

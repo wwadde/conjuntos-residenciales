@@ -1,0 +1,55 @@
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Build artifacts
+build/
+target/
+out/
+*.jar
+*.war
+*.ear
+*.class
+
+# Gradle
+.gradle/
+gradle/
+gradlew
+gradlew.bat
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Docker
+docker-compose*.yaml
+Dockerfile
+.dockerignore
+
+# Documentation
+README.md
+HELP.md
+docs/
+
+# Logs
+logs/
+*.log
+
+# Test
+src/test/
+
+# Environment
+.env
+.env.*
+
