@@ -1,4 +1,3 @@
-
 spring:
   r2dbc:
     url: ${SPRING_R2DBC_URL:r2dbc:postgresql://db:5432/conjuntos}
@@ -9,16 +8,17 @@ spring:
       max-size: 50
       max-idle-time: 30m
       validation-query: SELECT 1
+  docker:
+    compose:
+      enabled: false
 
 
-# SpringDoc / Swagger - Deshabilitado en producción
 springdoc:
   swagger-ui:
     enabled: false
   api-docs:
     enabled: false
 
-# Servidor con graceful shutdown
 server:
   port: 8080
   shutdown: graceful
@@ -26,7 +26,6 @@ server:
     enabled: true
     min-response-size: 1024
 
-# Management endpoints para producción
 management:
   endpoints:
     web:
@@ -38,7 +37,6 @@ management:
         enabled: true
       show-details: when-authorized
 
-# Logging optimizado para producción
 logging:
   level:
     root: INFO
